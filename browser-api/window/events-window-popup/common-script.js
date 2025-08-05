@@ -50,44 +50,35 @@ const windowEvents = [
 
 windowEvents.forEach(
 	(eventName) => {
-		window.addEventListener(eventName, (...args) => {
-			console.log(document.title, 'window', eventName, args);
+		window.addEventListener(
+			eventName,
+			(...args) => {
+				console.log(document.title, 'window', eventName, args);
 
-			if (!window.opener) {
-				// Проверяем, существует ли родительское окно
-				// если window.opener не является окном, то:
-				// * Вариант 1. Этот загружен в родительском окне.
-				// * Вариант 2. Этот загружен в дочернем окне, но родительское окно закрыто и
-				//   ссылка в дочернем обнулилась
+				if (!window.opener) {
+					// Проверяем, существует ли родительское окно
+					// если window.opener не является окном, то:
+					// * Вариант 1. Этот загружен в родительском окне.
+					// * Вариант 2. Этот загружен в дочернем окне, но родительское окно закрыто и
+					//   ссылка в дочернем обнулилась
 
-				// console.warn('POPUP (child) - Родительское окно не найдено (может быть закрыто).');
-				return;
-			}
-
-			// Отправляем сообщение родительскому окну
-			// event.data будет объектом, который мы передаем
-			// event.origin должен совпадать с origin родителя
-			window.opener.postMessage({
-				eventName: 'event-in-child',
-				payload: {
-					'child-event-name': eventName,
-					//'child-event-aegs': args
+					return;
 				}
-			});
-			// window.opener.postMessage(
-			// 	{
-			// 		type: 'event-in-child',
-			// 		payload: {
-			// 			data: {
-			// 				eventName: eventName
-			// 			},
-			// 			timestamp: new Date().toISOString()
-			// 		}
-			// 	},
-			// 	window.location.origin // Указываем целевой origin для безопасности
-			// );
-			console.log(document.title, 'Отправлено сообщение родительскому окну.');
-		});
+
+				// Отправляем сообщение родительскому окну
+				// event.data будет объектом, который мы передаем
+				// event.origin должен совпадать с origin родителя
+				window.opener.postMessage({
+					eventName: 'event-in-child',
+					payload: {
+						'child-event-name': eventName,
+						//'child-event-aegs': args
+					}
+				});
+
+				console.log(document.title, 'Отправлено сообщение родительскому окну.');
+			}
+		);
 	}
 );
 
